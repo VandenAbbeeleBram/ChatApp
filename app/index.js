@@ -7,14 +7,15 @@ app.get('/', function (req, res) {
 });
 
 io.on('connection', function (socket) {
-  console.log('a user connected');
+  socket.broadcast.emit('user joined', 'a new user connected, say hi!');
 
   socket.on("disconnect", function () {
-    console.log('user disconnected');
+    socket.broadcast.emit('user left', 'a user left the chat.');
   })
 
-  socket.on('chat message', function (msg) {
-    io.emit('chat message', msg);
+  socket.on('chat message', function (msg, usr, time) {
+    console.log(usr);
+    io.emit('chat message', msg, usr, time);
   })
 });
 

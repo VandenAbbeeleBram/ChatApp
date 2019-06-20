@@ -55,7 +55,9 @@
 <body>
   <ul id="messages"></ul>
   <form action="">
-    <input id="m" autocomplete="off" /><button>Send</button>
+    <input id="user" autocomplete="off" />
+    <input id="m" autocomplete="off" />
+    <button>Send</button>
   </form>
 </body>
 
@@ -67,12 +69,31 @@
     var socket = io();
     $('form').submit(function (e) {
       e.preventDefault(); // prevents page reloading
-      socket.emit('chat message', $('#m').val());
-      $('#m').val('');
-      return false;
+
+      let message = $('#m').val();
+      let user = $('#user').val();
+
+      if (message != "" && message != null && user != "" && user != null) {
+        let date = new Date();
+        console.log(date);
+        let time = date.getHours() + ":" + date.getMinutes() + "u";
+        console.log()
+        socket.emit('chat message', message, user, time);
+        $('#m').val('');
+        return false;
+      }
     });
 
-    socket.on('chat message', function (msg) {
+    socket.on('chat message', function (msg, usr, time) {
+
+      $('#messages').append($('<li>').text(`${usr} @${time} : ${msg}`));
+    });
+
+    socket.on('user left', function (msg) {
+      $('#messages').append($('<li>').text(msg));
+    });
+
+    socket.on('user joined', function (msg) {
       $('#messages').append($('<li>').text(msg));
     });
   });
