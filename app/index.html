@@ -25,8 +25,16 @@
     form input {
       border: 0;
       padding: 10px;
-      width: 90%;
+      float: left;
       margin-right: .5%;
+    }
+
+    form input#user {
+      width: 20%;
+    }
+
+    form input#m {
+      width: 70%;
     }
 
     form button {
@@ -49,14 +57,26 @@
     #messages li:nth-child(odd) {
       background: #eee;
     }
+
+    #alerts {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    #alerts li {
+      padding: 5px 10px;
+      background-color: goldenrod;
+    }
   </style>
 </head>
 
 <body>
   <ul id="messages"></ul>
+  <ul id="alerts"></ul>
   <form action="">
-    <input id="user" autocomplete="off" />
-    <input id="m" autocomplete="off" />
+    <input id="user" placeholder="username" autocomplete="off" />
+    <input id="m" placeholder="message" autocomplete="off" />
     <button>Send</button>
   </form>
 </body>
@@ -66,6 +86,7 @@
 <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 <script>
   $(function () {
+    // sending events
     var socket = io();
     $('form').submit(function (e) {
       e.preventDefault(); // prevents page reloading
@@ -73,19 +94,46 @@
       let message = $('#m').val();
       let user = $('#user').val();
 
-      if (message != "" && message != null && user != "" && user != null) {
+      if (message != "" && message != null && user.trim() != "" && user != null) {
+
         let date = new Date();
-        console.log(date);
         let time = date.getHours() + ":" + date.getMinutes() + "u";
-        console.log()
+
         socket.emit('chat message', message, user, time);
+        $('#messages').append($('<li>').text(`${user} @${time}: ${message}`));
         $('#m').val('');
         return false;
       }
     });
 
-    socket.on('chat message', function (msg, usr, time) {
+    // we have to reduce the amount of interactions with the server
+    // we do this by only sending the typing event when the textbox is not empty, and when the user wasn't typing before (which is checked by isTyping).
+    let isTyping = false;
+    $('#m').on('input', function () {
+      let message = $('#m').val();
+      let user = $('#user').val();
 
+      if (user.trim() != "" && user != null) {
+
+        if (message != null && message.trim() != '') {
+
+          if (!isTyping) {
+            socket.emit('typing', $('#user').val());
+            isTyping = true;
+          }
+          // do nothing when isTyping is true. Otherwise it would lead to unnecessary contact with server.
+
+        } else {
+          socket.emit('stopped typing');
+          isTyping = false;
+        }
+      }
+    })
+
+
+    // handling receiving events
+    socket.on('chat message', function (msg, usr, time) {
+      stopTyping(usr);
       $('#messages').append($('<li>').text(`${usr} @${time} : ${msg}`));
     });
 
@@ -96,5 +144,23 @@
     socket.on('user joined', function (msg) {
       $('#messages').append($('<li>').text(msg));
     });
+
+    socket.on('typing', function (usr) {
+      $('#alerts').append($('<li>').text(`${usr} is typing ...`));
+    });
+
+    socket.on('stopped typing', function (usr) {
+      stopTyping(usr);
+    });
+
+    // checks all the alerts (multiple users could be typing at once) and removes the typing element from a specified user.
+    function stopTyping(usr) {
+      let alerts = document.querySelectorAll('#alerts li');
+      for (let i = 0; i < alerts.length; i++) {
+        if (alerts[i].innerHTML === `${usr} is typing ...`) {
+          alerts[i].remove();
+        }
+      }
+    }
   });
 </script>
