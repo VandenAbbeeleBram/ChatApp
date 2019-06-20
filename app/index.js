@@ -32,7 +32,7 @@ io.on('connection', function (socket) {
     }
   })
 
-  socket.on('stoppped typing', function (usr) {
+  socket.on('stopped typing', function (usr) {
     if (status !== '') { // doubleckeck serverside
       socket.broadcast.emit('stopped typing', usr);
     }

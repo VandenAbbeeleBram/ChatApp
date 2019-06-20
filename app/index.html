@@ -86,6 +86,10 @@
 <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 <script>
   $(function () {
+    // we have to reduce the amount of interactions with the server
+    // we do this by only sending the typing event when the textbox is not empty, and when the user wasn't typing before (which is checked by isTyping).
+    let isTyping = false;
+
     // sending events
     var socket = io();
     $('form').submit(function (e) {
@@ -102,14 +106,13 @@
         socket.emit('chat message', message, user, time);
         $('#messages').append($('<li>').text(`${user} @${time}: ${message}`));
         $('#m').val('');
+        isTyping = false;
         return false;
       }
     });
 
-    // we have to reduce the amount of interactions with the server
-    // we do this by only sending the typing event when the textbox is not empty, and when the user wasn't typing before (which is checked by isTyping).
-    let isTyping = false;
-    $('#m').on('input', function () {
+
+    $('#m').on('change', function () {
       let message = $('#m').val();
       let user = $('#user').val();
 
@@ -124,7 +127,7 @@
           // do nothing when isTyping is true. Otherwise it would lead to unnecessary contact with server.
 
         } else {
-          socket.emit('stopped typing');
+          socket.emit('stopped typing', user);
           isTyping = false;
         }
       }
