@@ -15,15 +15,87 @@
 
     body {
       font: 13px Helvetica, Arial;
-      font-family: 'Poppins', sans-serif
+      font-family: 'Poppins', sans-serif;
+      background-color: rgb(105, 105, 105);
+    }
+
+
+    .connect {
+      width: 500px;
+      height: 300px;
+      background: rgb(120, 120, 120);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 999;
+    }
+
+    .connect p {
+      margin: 10px;
+    }
+
+    .connect form {
+      background: rgb(77, 148, 255);
+      padding: 3px;
+      padding: 3px;
+      height: 45px;
+      position: fixed;
+      bottom: 0;
+      float: left;
+      width: 100%;
+      position: absolute;
+      overflow: hidden;
+    }
+
+    .connect form button {
+      width: 30%;
+    }
+
+    form button .btn-content {
+      box-sizing: border-box;
+      position: relative;
+      height: 100%;
+      width: 100%;
+      margin-left: 17px;
+    }
+
+    .connect form button .btn-content p,
+    .connect form button .btn-content i {
+      position: absolute;
+      height: 39px;
+      float: left;
+      line-height: 39px;
+    }
+
+
+    .connect form button .btn-content p {
+      margin: 0;
+      padding: 0;
+    }
+
+    .connect form button .btn-content i {
+      margin-left: 10px;
+      transform: translateY(0%);
+    }
+
+    .connect form input#user {
+      width: 69.5%;
+    }
+
+    .blurry {
+      filter: blur(1.5px);
+      position: absolute;
+      width: 100%;
+      height: 100%;
     }
 
     .left-panel {
       left: 0;
       width: 25%;
       position: absolute;
+      border: 0;
       height: 100%;
-
       background-color: rgb(80, 80, 80);
     }
 
@@ -40,12 +112,13 @@
       width: 75%;
       height: 100%;
       background-color: rgb(105, 105, 105);
+      border: 0;
     }
 
-    form {
+    .right-panel form {
       background: rgb(77, 148, 255);
       padding: 3px;
-      height: 50px;
+      height: 5.5%;
       position: fixed;
       bottom: 0;
       float: right;
@@ -65,25 +138,38 @@
       border: none;
     }
 
-    form input::placeholder {
-      color: white;
-    }
-
-    form input#user {
-      width: 20%;
-    }
-
-    form input#m {
-      width: 70%;
-    }
-
     form button {
       height: 100%;
-      width: 9%;
       border: none;
       background-color: rgba(255, 255, 255, 0.3);
       color: white;
       cursor: pointer;
+    }
+
+    form input::placeholder {
+      color: white;
+    }
+
+    form input#m {
+      width: 90.5%;
+    }
+
+    .right-panel form button {
+      width: 9%;
+    }
+
+
+    .right-panel button .btn-content p,
+    .right-panel button .btn-content i {
+      position: absolute;
+      height: 50px;
+      float: left;
+      line-height: 50px;
+    }
+
+    .right-panel button .btn-content i {
+      transform: translate(0);
+      margin-left: 5px;
     }
 
     form button p {
@@ -91,7 +177,7 @@
       float: left;
       text-align: center;
       line-height: 35px;
-      padding: 0 10px 0 15px;
+      padding: 0 10px 0 10px;
     }
 
     form button i {
@@ -106,7 +192,20 @@
       list-style-type: none;
       margin: 0;
       padding: 0;
+      height: 94.5%;
+      position: relative;
+      overflow: auto;
     }
+
+    #onlineUsers li {
+      padding: 5px 10px;
+      font-size: 15px;
+    }
+
+    #onlineUsers li:nth-child(odd) {
+      background: rgb(100, 100, 100);
+    }
+
 
     #messages li {
       padding: 5px 10px;
@@ -119,52 +218,87 @@
 
     #alerts {
       list-style-type: none;
+      background-color: goldenrod;
       font-size: 15px;
+      position: absolute;
+      width: 100%;
       margin: 0;
-      padding: 0;
+      bottom: 0;
     }
 
     #alerts li {
       padding: 5px 10px;
+      width: 100%;
+      padding: 5px 10px;
+      position: relative;
+    }
+
+    #alerts li:nth-child(odd) {
+      padding: 5px 10px;
+      width: 100%;
+      padding: 5px 10px;
+      position: relative;
       background-color: goldenrod;
     }
   </style>
 </head>
 
 <body>
-  <section class="left-panel">
-    <h1>Online</h1>
-  </section>
-
-  <section class="right-panel">
-    <ul id="messages"></ul>
-    <ul id="alerts"></ul>
-    <form action="">
+  <section class="connect">
+    <h1>Connect</h1>
+    <p>In order to send messages you have to fill in your username and connect.</p>
+    <form action="" id="connect">
       <input id="user" placeholder="username" autocomplete="off" />
-      <input id="m" placeholder="message" autocomplete="off" />
       <button>
-        <p>Send</p><i class="material-icons">send</i>
+        <div class="btn-content">
+          <p>Connect</p><i class="material-icons">chat</i>
+        </div>
       </button>
     </form>
   </section>
+
+  <div id="chat-wrapper" class="blurry">
+    <section class="left-panel">
+      <h1>Online</h1>
+      <ul id="onlineUsers"></ul>
+    </section>
+    <section class="right-panel">
+      <ul id="messages">
+        <ul id="alerts"></ul>
+      </ul>
+
+      <form action="" id="chat">
+        <input id="m" placeholder="message" autocomplete="off" />
+        <button id="send">
+          <div class="btn-content">
+            <p>Send</p><i class="material-icons">send</i>
+          </div>
+        </button>
+      </form>
+    </section>
+  </div>
+
 </body>
 
 </html>
 <script src="/socket.io/socket.io.js"></script>
 <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 <script>
+  let user = '';
   $(function () {
     // we have to reduce the amount of interactions with the server
     // we do this by only sending the typing event when the textbox is not empty, and when the user wasn't typing before (which is checked by isTyping).
     let isTyping = false;
 
+    $('#m').prop('disabled', true)
+    $('#send').prop('disabled', true)
+
     // sending events
     var socket = io();
-    $('form').submit(function (e) {
+    $('form#chat').submit(function (e) {
       e.preventDefault(); // prevents page reloading
 
       let message = $('#m').val();
-      let user = $('#user').val();
 
       if (message != "" && message != null && user.trim() != "" && user != null) {
 
@@ -179,17 +313,30 @@
       }
     });
 
+    $('form#connect').submit(function (e) {
+      e.preventDefault();
 
-    $('#m').on('change', function () {
+      if ($('#user').val() != null && $('#user').val().trim() != '') {
+        user = $('#user').val();
+        $('#chat-wrapper').removeClass('blurry');
+        $('.connect').css('display', 'none')
+        $('#m').prop('disabled', false)
+        $('#send').prop('disabled', false)
+
+        socket.emit('connected', $('#user').val());
+      }
+    })
+
+
+    $('#m').on('propertychange change keyup paste input', function () {
       let message = $('#m').val();
-      let user = $('#user').val();
 
       if (user.trim() != "" && user != null) {
 
         if (message != null && message.trim() != '') {
-
           if (!isTyping) {
-            socket.emit('typing', $('#user').val());
+
+            socket.emit('typing', user);
             isTyping = true;
           }
           // do nothing when isTyping is true. Otherwise it would lead to unnecessary contact with server.
@@ -208,6 +355,13 @@
       $('#messages').append($('<li>').text(`${usr} @${time} : ${msg}`));
     });
 
+    socket.on('onlineUsers', function (users) {
+      users.forEach(user => {
+        $('#onlineUsers').append($('<li>').text(user));
+      });
+
+    });
+
     socket.on('user left', function (msg) {
       $('#messages').append($('<li>').text(msg));
     });
@@ -224,6 +378,14 @@
       stopTyping(usr);
     });
 
+    socket.on('connected', function (usr) {
+      $('#onlineUsers').append($('<li>').text(`${usr}`));
+    });
+
+    socket.on('disconnected', function (usr) {
+      userDisconnected(usr);
+    });
+
     // checks all the alerts (multiple users could be typing at once) and removes the typing element from a specified user.
     function stopTyping(usr) {
       let alerts = document.querySelectorAll('#alerts li');
@@ -233,5 +395,15 @@
         }
       }
     }
+
+    function userDisconnected(usr) {
+      let users = document.querySelectorAll('#onlineUsers li');
+      for (let i = 0; i < users.length; i++) {
+        if (users[i].innerHTML === `${usr}`) {
+          users[i].remove();
+        }
+      }
+    }
+
   });
 </script>
