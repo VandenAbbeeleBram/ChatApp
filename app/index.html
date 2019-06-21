@@ -384,6 +384,7 @@
 
     socket.on('disconnected', function (usr) {
       userDisconnected(usr);
+      stopTyping(usr);
     });
 
     // checks all the alerts (multiple users could be typing at once) and removes the typing element from a specified user.
