@@ -15,7 +15,7 @@ io.on('connection', function (socket) {
   sockets.push(socket);
   socket.emit('onlineUsers', onlineUsers);
 
-  // the connected event is used when the user has enteres his username and clicked on connect.
+  // the connected event is used when the user has entered his username and clicked on connect.
   socket.on('connected', function (usr) {
     if (usr.trim() != '') {
       socket.broadcast.emit('connected', usr);
